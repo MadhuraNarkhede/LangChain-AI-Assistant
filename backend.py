@@ -24,7 +24,7 @@ class QueryInput(BaseModel):
 model_name = "meta-llama/Llama-2-7b-chat-hf"
 try:
     tokenizer = AutoTokenizer.from_pretrained(
-        model_name, token="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"
+        model_name, token="Your HuggingFace Token"
     )
     model = AutoModelForCausalLM.from_pretrained(model_name).to("cpu")
 except Exception as e:
