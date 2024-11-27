@@ -4,5 +4,5 @@ Run this command one by one in vscode Terminal:-
 3) pip install fastapi uvicorn transformers torch pydantic
 4) pip install accelerate>=0.26.0 
 5) uvicorn backend:app
-Now , Copy to this url to user brower to see the backend output file
+Now , Copy to the  url to user brower to see the backend output file
 Now the final step to run the application along with frontend is to go to your index.html file and right click on it and then select "Open with Live Server " option.
