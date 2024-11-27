@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LangChain AI Assistant</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f3f4f7;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            background-color: #fff;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            max-width: 650px;
+            width: 100%;
+            text-align: center;
+        }
+
+        h1 {
+            color: #6a5acd;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        textarea {
+            width: 100%;
+            height: 120px;
+            padding: 15px;
+            border: 2px solid #dcdcdc;
+            border-radius: 8px;
+            font-size: 1rem;
+            color: #333;
+            background-color: #fafafa;
+            resize: none;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        textarea:focus {
+            border-color: #6a5acd;
+            outline: none;
+            box-shadow: 0 0 5px rgba(106, 92, 205, 0.5);
+        }
+
+        button {
+            padding: 12px 30px;
+            background-color: #6a5acd;
+            color: white;            
+            border: none;
+            border-radius: 25px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        button:hover {
+            background-color: #5a4ea1;
+            transform: translateY(-2px);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .response {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #fafafa;
+            border: 1px solid #e2e2e2;
+            border-radius: 10px;
+            font-size: 1rem;
+            color: #555;
+            display: none;
+        }
+
+        .response.error {
+            color: #e74c3c;
+            background-color: #fce6e6;
+            border: 1px solid #e74c3c;
+        }
+
+        .response.show {
+            animation: fadeIn 0.5s ease-in-out;
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>LangChain AI Assistant</h1>
+        <textarea id="query" placeholder="Enter your question here..."></textarea>
+        <button onclick="sendQuery()">Ask AI</button>
+        <div class="response" id="response"></div>
+    </div>
+
+    <script>
+        async function sendQuery() {
+            const query = document.getElementById("query").value;
+            const responseDiv = document.getElementById("response");
+
+            responseDiv.innerHTML = '';
+            responseDiv.classList.remove('error', 'show');
+
+            if (!query) {
+                responseDiv.innerHTML = "Please enter a question.";
+                responseDiv.classList.add('error', 'show');
+                return;
+            }
+
+            responseDiv.innerHTML = "Processing...";
+            responseDiv.classList.add('show');
+
+            try {
+                const response = await fetch("http://127.0.0.1:8000/query/", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ query: query })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    responseDiv.innerHTML = `<strong>AI Response:</strong><br>${data.response}`;
+                } else {
+                    const errorData = await response.json();
+                    responseDiv.innerHTML = `Error: ${errorData.detail || "Unknown error occurred"}`;
+                    responseDiv.classList.add('error');
+                }
+            } catch (error) {
+                responseDiv.innerHTML = "An error occurred while processing your request. Please try again later.";
+                responseDiv.classList.add('error');
+            }
+
+            responseDiv.classList.add('show');
+        }
+    </script>
+</body>
+</html>
